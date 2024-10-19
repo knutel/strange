@@ -10,12 +10,16 @@ from strange.serve import watch_and_serve
 
 Post = namedtuple("Post", "date, title, draft, link")
 
+
 def process(out_folder, include_drafts=True):
     content_folder = pathlib.Path("content")
     theme_folder = pathlib.Path("theme")
     out_folder = pathlib.Path(out_folder)
+    template_folder = pathlib.Path("templates")
+    for folder in [content_folder, theme_folder, out_folder, template_folder]:
+        folder.mkdir(parents=True, exist_ok=True)
     env = j2.Environment(
-        loader=j2.FileSystemLoader("templates")) 
+        loader=j2.FileSystemLoader(template_folder)) 
     input_paths = content_folder.glob("*.md")
     posts = []
     header = env.get_template("header_template.html").render()
@@ -35,7 +39,7 @@ def process(out_folder, include_drafts=True):
             output_path = out_folder / output_filename
             output_path.write_text(rendered)
 
-    posts.sort(key=lambda p: p.date)
+    posts.sort(key=lambda p: p.date, reverse=True)
     output_filename = out_folder / "index.html"
     posts_template = env.get_template("posts_template.html")
     rendered = posts_template.render(header=header, posts = posts)
@@ -63,4 +67,3 @@ def cli(serve, port, publish):
 
 if __name__ == "__main__":
     cli()
-

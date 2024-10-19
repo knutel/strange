@@ -1,7 +1,7 @@
 import http.server
 import socketserver
 import threading
-from watchfiles import watch
+import watchfiles
 
 
 class Server:
@@ -34,7 +34,7 @@ def watch_and_serve(process, folder, port):
     while True:
         process(folder)
         try:
-            for changes in watch("content"):
+            for changes in watchfiles.watch(*["content", "templates", "theme"]):
                 print(changes)
                 break
         except KeyboardInterrupt:
