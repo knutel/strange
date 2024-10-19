@@ -14,8 +14,6 @@ def process(out_folder, include_drafts=True):
     content_folder = pathlib.Path("content")
     theme_folder = pathlib.Path("theme")
     out_folder = pathlib.Path(out_folder)
-    for f in out_folder.glob("*"):
-        f.unlink()
     env = j2.Environment(
         loader=j2.FileSystemLoader("templates")) 
     input_paths = content_folder.glob("*.md")
